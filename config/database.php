@@ -87,7 +87,7 @@ return [
             'url' => env('DB_URL'),
             'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'test_laravel'),
+            'database' => env('DB_DATABASE', 'culinary'),
             'username' => env('DB_USERNAME', 'postgres'),
             'password' => env('DB_PASSWORD', '1563'),
             'charset' => env('DB_CHARSET', 'utf8'),
