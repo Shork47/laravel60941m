@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Dish;
 use App\Models\Ingredient;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ class DishController extends Controller
      */
     public function index()
     {
-        return view('dishes', ['dishes' => Dish::all()]);
+        return view('dishes', ['dishes' => Dish::orderBy('id', 'asc')->get()]);
     }
 
     /**
@@ -21,7 +22,7 @@ class DishController extends Controller
      */
     public function create()
     {
-        //
+        return view('dish_create', ['categories' => Category::all()]);
     }
 
     /**
@@ -29,7 +30,15 @@ class DishController extends Controller
      */
     public function store(Request $request)
     {
-
+        $validated = $request->validate([
+            'name' => 'required',
+            'cooking_method' => 'required|string',
+            'cooking_time' => 'required|integer',
+            'category_id' => 'integer',
+        ]);
+        $dish = new Dish($validated);
+        $dish->save();
+        return redirect('/dish');
     }
 
     /**
@@ -47,7 +56,10 @@ class DishController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('dish_edit', [
+            'dish' => Dish::all()->where('id', $id)->first(),
+            'categories' => Category::all(),
+        ]);
     }
 
     /**
@@ -55,7 +67,19 @@ class DishController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required',
+            'cooking_method' => 'required|string',
+            'cooking_time' => 'required|integer',
+            'category_id' => 'integer',
+        ]);
+        $dish = Dish::all()->where('id', $id)->first();
+        $dish->name = $validated['name'];
+        $dish->cooking_method = $validated['cooking_method'];
+        $dish->cooking_time = $validated['cooking_time'];
+        $dish->category_id = $validated['category_id'];
+        $dish->save();
+        return redirect('/dish');
     }
 
     /**
@@ -63,6 +87,7 @@ class DishController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Dish::destroy($id);
+        return redirect('/dish');
     }
 }

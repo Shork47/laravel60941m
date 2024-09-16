@@ -10,6 +10,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Dish extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'name',
+        'cooking_method',
+        'cooking_time',
+        'category_id',
+    ];
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

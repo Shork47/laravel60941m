@@ -13,6 +13,7 @@
     <td>Способ приготовления</td>
     <td>Время приготовления</td>
     <td>Категория</td>
+    <td>Действие</td>
     </thead>
     @foreach($dishes as $dish)
         <tr>
@@ -21,6 +22,9 @@
             <td>{{$dish->cooking_method}}</td>
             <td>{{$dish->cooking_time}}</td>
             <td>{{$dish->category->name}}</td>
+            <td><a href="{{url('dish/destroy/'.$dish->id)}}">Удалить</a>
+                <a href="{{url('dish/edit/'.$dish->id)}}">Редактировать</a>
+            </td>
         </tr>
     @endforeach
 </table>

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('cooking_method');
             $table->unsignedInteger('cooking_time');
+            $table->timestamps();
         });
     }
 
