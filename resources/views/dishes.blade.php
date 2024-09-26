@@ -28,5 +28,6 @@
         </tr>
     @endforeach
 </table>
+{{$dishes -> links()}}
 </body>
 </html>

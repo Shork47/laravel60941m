@@ -12,9 +12,10 @@ class DishController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(request $request)
     {
-        return view('dishes', ['dishes' => Dish::orderBy('id', 'asc')->get()]);
+        $perpage = $request->perpage ?? 2;
+        return view('dishes', ['dishes' => Dish::orderBy('id', 'asc')->paginate($perpage)->withQueryString()]);
     }
 
     /**
