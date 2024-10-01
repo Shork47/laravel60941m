@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\IngredientController;
+use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,16 +18,28 @@ Route::get('/category/{id}', [CategoryController::class, 'show']);
 
 Route::get('/dish', [DishController::class, 'index']);
 
-Route::get('/dish/create', [DishController::class, 'create']);
+Route::get('/dish/create', [DishController::class, 'create'])->middleware('auth');
 
-Route::get('/dish/edit/{id}', [DishController::class, 'edit']);
+Route::get('/dish/edit/{id}', [DishController::class, 'edit'])->middleware('auth');
 
-Route::post('/dish/update/{id}', [DishController::class, 'update']);
+Route::post('/dish/update/{id}', [DishController::class, 'update'])->middleware('auth');
 
-Route::get('/dish/destroy/{id}', [DishController::class, 'destroy']);
+Route::get('/dish/destroy/{id}', [DishController::class, 'destroy'])->middleware('auth');
 
 Route::post('/dish', [DishController::class, 'store']);
 
 Route::get('/dish/{id}', [DishController::class, 'show']);
 
 Route::get('/ingredient/{id}', [IngredientController::class, 'show']);
+
+Route::get('/login', [LoginController::class, 'login']);
+
+Route::get('/logout', [LoginController::class, 'logout']);
+
+Route::post('/auth', [LoginController::class, 'authenticate']);
+
+Route::get('/login', [LoginController::class, 'login'])->name('login');
+
+Route::get('/error', function () {
+    return view ('error', ['message' => session('message')]);
+});

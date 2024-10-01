@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Dish;
 use App\Models\Ingredient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class DishController extends Controller
 {
@@ -88,6 +89,9 @@ class DishController extends Controller
      */
     public function destroy(string $id)
     {
+        if (! Gate::allows('destroy-dish', Dish::all()->where('id', $id)->first())) {
+            return redirect('/error')->with('message', 'У вас нет разрешение на удаление блюда номер ' . $id);
+        }
         Dish::destroy($id);
         return redirect('/dish');
     }

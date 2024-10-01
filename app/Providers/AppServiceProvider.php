@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Dish;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 //use Nette\Utils\Paginator;
 use Illuminate\Pagination\Paginator;
@@ -22,5 +25,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::defaultView('pagination::default');
+
+        Gate::define('destroy-dish', function (User $user, Dish $dish) {
+            return $user->is_admin;
+        });
     }
 }
