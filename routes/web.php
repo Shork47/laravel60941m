@@ -4,11 +4,11 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\RegistrationController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [DishController::class, 'index']);
+
 Route::get('/hello', function () {
     return view('hello' ,['title' => 'Hello World!']);
 });
@@ -43,3 +43,7 @@ Route::get('/login', [LoginController::class, 'login'])->name('login');
 Route::get('/error', function () {
     return view ('error', ['message' => session('message')]);
 });
+
+Route::get('/registration', [RegistrationController::class, 'registration']);
+
+Route::post('/registration', [RegistrationController::class, 'register']);

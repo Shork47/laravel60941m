@@ -7,7 +7,7 @@
             @foreach($category->dishes as $dish)
                 <div class="col-12 col-md-6">
                     <a href="{{url('dish/'.$dish->id)}}" style="text-decoration: none; color: black;">
-                        <div class="card h-100 text-center" >
+                        <div class="card h-100 text-center" style="border-radius: 10px; border: 1px solid #000000;">
                             <img src="" class="card-img-top" alt="Image">
                             <div class="card-body">
                                 <h5 class="card-title">{{$dish->name}}</h5>

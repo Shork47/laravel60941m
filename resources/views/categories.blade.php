@@ -6,7 +6,7 @@
     <div class="row g-4">
     @foreach($categories as $category)
         <div class="col-12 col-md-6">
-            <div class="card h-100 text-center" >
+            <div class="card h-100 text-center" style="border-radius: 10px; border: 1px solid #000000;">
                 <a href="{{url('category/'.$category->id)}}" style="text-decoration: none; color: black;">
                     <img src="..." class="card-img-top" alt="...">
                     <div class="card-body">

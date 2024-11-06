@@ -5,8 +5,8 @@
 <div class="container my-4">
     <div class="row g-4">
         @foreach($dishes as $dish)
-            <div class="col-12 col-md-6">
-                <div class="card h-100 text-center" >
+            <div class="col-12 col-md-6" >
+                <div class="card h-100 text-center" style="border-radius: 10px; border: 1px solid #000000;">
                     <img src="" class="card-img-top" alt="Image">
                     <div class="card-body">
                         <h5 class="card-title">{{$dish->name}}</h5>
@@ -15,7 +15,7 @@
                         </p>
                         <a href="{{url('dish/'.$dish->id)}}" class="btn btn-primary">Посмотреть</a>
                     </div>
-                    <a href="{{url('category/'.$dish->category->id)}}" class="btn btn-info">{{$dish->category->name}}</a>
+                    <a href="{{url('category/'.$dish->category->id)}}" class="btn btn-info" style="border-radius: 10px;">{{$dish->category->name}}</a>
                 </div>
             </div>
         @endforeach

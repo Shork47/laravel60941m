@@ -9,7 +9,7 @@
             <label for="name" class="form-label">Наименование</label>
             <input type="text" name="name" id="name" class="form-control" value="{{ old('name') }}"/>
             @error('name')
-            <div class="is-invalid" style="color: red">{{ $message }}</div>
+            <div class="is-invalid">{{ $message }}</div>
             @enderror
         </div>
 
@@ -17,7 +17,7 @@
             <label for="cooking_method" class="form-label">Метод приготовления</label>
             <textarea name="cooking_method" id="cooking_method" class="form-control custom-input" rows="4">{{ old('cooking_method') }}</textarea>
             @error('cooking_method')
-            <div class="is-invalid" style="color: red">{{ $message }}</div>
+            <div class="is-invalid">{{ $message }}</div>
             @enderror
         </div>
 
@@ -25,7 +25,7 @@
             <label for="cooking_time" class="form-label">Время приготовления, мин</label>
             <input type="number" name="cooking_time" id="cooking_time" class="form-control" value="{{ old('cooking_time') }}" min="0" step="1"/>
             @error('cooking_time')
-            <div class="is-invalid" style="color: red">{{ $message }}</div>
+            <div class="is-invalid">{{ $message }}</div>
             @enderror
         </div>
 
@@ -40,7 +40,7 @@
                 @endforeach
             </select>
             @error('category_id')
-            <div class="is-invalid" style="color: red">{{ $message }}</div>
+            <div class="is-invalid">{{ $message }}</div>
             @enderror
         </div>
 
@@ -65,13 +65,13 @@
                     @endforeach
                 </select>
                 @error('ingredients')
-                <div class="is-invalid" style="color: red">{{ $message }}</div>
+                <div class="is-invalid">{{ $message }}</div>
                 @enderror
 
                 <label for="quantity_1" class="form-label mt-3">Количество</label>
                 <input type="number" name="quantities[]" id="quantity_1" class="form-control" placeholder="Введите количество" min="0" step="1"/>
                 @error('quantities')
-                <div class="is-invalid" style="color: red">{{ $message }}</div>
+                <div class="is-invalid">{{ $message }}</div>
                 @enderror
             </div>
         </div>
