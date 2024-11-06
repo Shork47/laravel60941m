@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use function Laravel\Prompts\error;
 
 class LoginController extends Controller
 {
@@ -16,7 +17,10 @@ class LoginController extends Controller
         ]);
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('login');
+            if (session()->has('url.intended')) {
+                return redirect()->intended()->withErrors(['success' => 'Вход выполнен']);
+            }
+            return redirect()->back()->withErrors(['success' => 'Вход выполнен']);
         }
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
@@ -24,14 +28,14 @@ class LoginController extends Controller
     }
     public function login(Request $request)
     {
-        return view('login', ['user' => Auth::user()]);
+        return view('login', ['user' => Auth::user()])->withErrors(['error' => 'Для выполения данного действия необходима авторизация!']);
     }
     public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('login');
+        return redirect('/dish')->withErrors(['success' => 'Вы успешно вышли из системы',]);
     }
     /**
      * Display a listing of the resource.

@@ -28,7 +28,7 @@ Route::get('/dish/destroy/{id}', [DishController::class, 'destroy'])->middleware
 
 Route::post('/dish', [DishController::class, 'store']);
 
-Route::get('/dish/{id}', [DishController::class, 'show']);
+Route::get('/dish/{id}', [DishController::class, 'show'])->name('dish.show');
 
 Route::get('/ingredient/{id}', [IngredientController::class, 'show']);
 

@@ -24,7 +24,7 @@ class DishController extends Controller
      */
     public function create()
     {
-        return view('dish_create', ['categories' => Category::all()]);
+        return view('dish_create', ['categories' => Category::all(), 'ingredients' => Ingredient::all()]);
     }
 
     /**
@@ -36,10 +36,19 @@ class DishController extends Controller
             'name' => 'required',
             'cooking_method' => 'required|string',
             'cooking_time' => 'required|integer',
-            'category_id' => 'integer',
+            'category_id' => 'required|integer',
+            'ingredients' => 'required|array|exists:ingredients,id',
+            'quantities' => 'required|array|min:1',
         ]);
+
         $dish = new Dish($validated);
+        $dish->user_id = auth()->id();
         $dish->save();
+
+        foreach ($validated['ingredients'] as $index => $ingredientId) {
+            $dish->ingredient()->attach($ingredientId, ['quantity' => $validated['quantities'][$index]]);
+        }
+
         return redirect('/dish');
     }
 
@@ -59,8 +68,12 @@ class DishController extends Controller
     public function edit(string $id)
     {
         return view('dish_edit', [
-            'dish' => Dish::all()->where('id', $id)->first(),
+            'dish' => Dish::with(['ingredient' => function ($query) {
+                $query->select('ingredients.id', 'name', 'units', 'quantity')
+                    ->withPivot('quantity'); // Загружаем количество из pivot-таблицы (recipes)
+            }])->findOrFail($id),
             'categories' => Category::all(),
+            'ingredients' => Ingredient::all(),
         ]);
     }
 
@@ -74,14 +87,35 @@ class DishController extends Controller
             'cooking_method' => 'required|string',
             'cooking_time' => 'required|integer',
             'category_id' => 'integer',
+            'ingredients' => 'required|array', // массив с ингредиентами
+            'quantities' => 'required|array',  // массив с количеством для каждого ингредиента
+            'ingredients.*' => 'integer|exists:ingredients,id', // проверка, что каждый ингредиент существует
+            'quantities.*' => 'integer|min:1', // проверка на количество
         ]);
+
+        // Получаем блюдо по ID
         $dish = Dish::all()->where('id', $id)->first();
+
+        // Обновляем основные поля блюда
         $dish->name = $validated['name'];
         $dish->cooking_method = $validated['cooking_method'];
         $dish->cooking_time = $validated['cooking_time'];
         $dish->category_id = $validated['category_id'];
         $dish->save();
-        return redirect('/dish');
+
+        // Обновляем ингредиенты блюда
+        $ingredients = $validated['ingredients'];
+        $quantities = $validated['quantities'];
+        $ingredientData = [];
+
+        foreach ($ingredients as $index => $ingredientId) {
+            $ingredientData[$ingredientId] = ['quantity' => $quantities[$index]];
+        }
+
+        // Синхронизируем ингредиенты в промежуточной таблице с их количеством
+        $dish->ingredient()->sync($ingredientData);
+
+        return redirect()->route('dish.show',['id'=> $dish->id])->withErrors('success', 'Блюдо обновлено успешно');
     }
 
     /**
@@ -93,6 +127,6 @@ class DishController extends Controller
             return redirect('/error')->with('message', 'У вас нет разрешение на удаление блюда номер ' . $id);
         }
         Dish::destroy($id);
-        return redirect('/dish');
+        return redirect('/dish')->withErrors(['error'=>'Блюдо успешно удалено!']);
     }
 }
