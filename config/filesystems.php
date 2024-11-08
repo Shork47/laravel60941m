@@ -56,6 +56,16 @@ return [
             'throw' => false,
         ],
 
+        'minio' => [
+            'driver' => 's3',
+            'key'    => env('MINIO_ROOT_USER'),  // Ваш ключ доступа
+            'secret' => env('MINIO_ROOT_PASSWORD'),  // Ваш секретный ключ
+            'region' => 'us-east-1',  // Можете указать любое значение
+            'bucket' => env('MINIO_BUCKET'),  // Название вашего бакета
+            'endpoint' => env('MINIO_ENDPOINT'),  // Адрес MinIO сервера
+            'use_path_style_endpoint' => true,  // Включить для MinIO
+        ],
+
     ],
 
     /*

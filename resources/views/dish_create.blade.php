@@ -1,7 +1,7 @@
 @extends('layout')
 @section('content')
 <div class="container-lg d-flex justify-content-center flex-column align-items-center">
-    <form method="post" class="w-50 mb-5" action={{ url('dish') }} >
+    <form method="post" class="w-50 mb-5" enctype="multipart/form-data" action={{ url('dish') }} >
         @csrf
         <h2 class="text-center">Добавление блюда</h2>
 
@@ -46,7 +46,8 @@
 
         <div class="mb-3">
             <label for="formFileMultiple" class="form-label">Фотографии</label>
-            <input class="form-control" type="file" id="formFileMultiple" name="photos[]" multiple accept=".jpg, .jpeg, .png">
+            <input class="form-control" type="file" id="formFileMultiple" name="photos[]" multiple accept=".jpg, .jpeg, .png" onchange="validatePhotos()">
+            <small class="form-text text-muted">Максимум 3 фотографии.</small>
         </div>
 
         <div id="ingredientsContainer">
@@ -131,5 +132,15 @@
             }
         });
     });
+
+    function validatePhotos() {
+        const fileInput = document.getElementById('formFileMultiple');
+        const fileCount = fileInput.files.length;
+
+        if (fileCount > 3) {
+            alert("Вы можете загрузить не более 3 фотографий.");
+            fileInput.value = '';  // Сбросить выбор файлов
+        }
+    }
 </script>
 @endsection

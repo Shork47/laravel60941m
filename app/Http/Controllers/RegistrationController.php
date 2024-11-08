@@ -38,7 +38,7 @@ class RegistrationController extends Controller
 
         Auth::login($user);
 
-        return redirect('/');
+        return redirect('/')->withErrors(['success' => 'Вы успешно зарегестрировались в системе!']);
     }
     /**
      * Display a listing of the resource.

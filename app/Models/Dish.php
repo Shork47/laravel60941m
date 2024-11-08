@@ -31,4 +31,9 @@ class Dish extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function photo(): HasMany
+    {
+        return $this->HasMany(Photo::class);
+    }
 }

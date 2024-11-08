@@ -35,7 +35,7 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/dish')->withErrors(['success' => 'Вы успешно вышли из системы',]);
+        return redirect('/dish')->withErrors(['success' => 'Вы успешно вышли из системы']);
     }
     /**
      * Display a listing of the resource.

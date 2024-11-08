@@ -39,6 +39,7 @@ class DishController extends Controller
             'category_id' => 'required|integer',
             'ingredients' => 'required|array|exists:ingredients,id',
             'quantities' => 'required|array|min:1',
+//            'photos.*' => 'image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
         $dish = new Dish($validated);
@@ -49,6 +50,19 @@ class DishController extends Controller
             $dish->ingredient()->attach($ingredientId, ['quantity' => $validated['quantities'][$index]]);
         }
 
+            if ($request->hasFile('photos')) {
+                foreach ($request->file('photos') as $photoFile) {
+                    $path = $photoFile->store('photos', 'minio'); // Сохранение файла в папку public/photos
+
+                    // Привязка фотографии к блюду
+                    $dish->photo()->create([
+                        'path' => $path
+                    ]);
+                }
+            } else {
+                // Обработка ошибки, если файлы не были загружены
+                return back()->withErrors(['error'=>'Необходимо добавить хотя бы одну фотографию']);
+            }
         return redirect('/dish');
     }
 

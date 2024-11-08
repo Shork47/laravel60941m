@@ -11,15 +11,13 @@
         @endif
         <div id="carouselExampleControlsNoTouching" class="carousel slide" data-bs-touch="false" data-bs-interval="false">
             <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img src="..." class="d-block w-100" alt="...">
-                </div>
-                <div class="carousel-item">
-                    <img src="..." class="d-block w-100" alt="...">
-                </div>
-                <div class="carousel-item">
-                    <img src="..." class="d-block w-100" alt="...">
-                </div>
+                @foreach($dish->photo as $photo)
+                    <div class="carousel-item @if($loop->first) active @endif">
+                        <img src="{{ Storage::disk('minio')->url($photo->path) }}" class="d-block w-100" alt="Фото блюда">
+                        <!-- Вывод пути изображения для отладки -->
+                        <p>{{ Storage::disk('minio')->url($photo->path) }}</p>
+                    </div>
+                @endforeach
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
