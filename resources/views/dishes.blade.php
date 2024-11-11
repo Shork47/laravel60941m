@@ -8,7 +8,7 @@
             <div class="col-12 col-md-6" >
                 <a href="{{url('dish/'.$dish->id)}}" style="text-decoration: none; color: black;">
                 <div class="card h-100 text-center" style="border-radius: 10px; border: 1px solid #000000;">
-                    <img src="{{ $dish->photo->first() ? Storage::disk('minio')->url($dish->photo->first()->path) : '' }}" class="card-img-top" alt="Image" style="object-fit: cover; height: 500px; width: 100%; border-radius: 10px;">
+                    <img src="{{ $dish->photo->first() ? Storage::disk('minio')->url($dish->photo->first()->path) : '' }}" class="card-img-top" alt="Image" style="object-fit: cover; height: 350px; width: 100%; border-radius: 10px;">
                     <div class="card-body">
                         <h5 class="card-title">{{$dish->name}}</h5>
                         <p class="card-text" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
