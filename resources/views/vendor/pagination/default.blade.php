@@ -4,11 +4,11 @@
             {{-- Previous Page Link --}}
             @if ($paginator->onFirstPage())
                 <li class="page-item disabled">
-                    <a class="page-link" tabindex="-1" aria-disabled="true">&lsaquo;</a>
+                    <a class="page-link rounded-start" tabindex="-1" aria-disabled="true">&lsaquo;</a>
                 </li>
             @else
                 <li>
-                    <a class="page-link" aria-hidden="true" href="{{ $paginator->previousPageUrl() }}">&lsaquo;</a>
+                    <a class="page-link rounded-start" aria-hidden="true" href="{{ $paginator->previousPageUrl() }}">&lsaquo;</a>
                 </li>
             @endif
 
@@ -34,11 +34,11 @@
             {{-- Next Page Link --}}
             @if ($paginator->hasMorePages())
                 <li>
-                    <a class="page-link" href="{{ $paginator->nextPageUrl() }}" aria-hidden="true">&rsaquo;</a>
+                    <a class="page-link rounded-end" href="{{ $paginator->nextPageUrl() }}" aria-hidden="true" style="margin-left: -1px">&rsaquo;</a>
                 </li>
             @else
                 <li class="page-item disabled">
-                    <a class="page-link" aria-disabled="true" tabindex="-1">&rsaquo;</a>
+                    <a class="page-link rounded-end" aria-disabled="true" tabindex="-1" style="margin-left: -1px">&rsaquo;</a>
                 </li>
             @endif
         </ul>

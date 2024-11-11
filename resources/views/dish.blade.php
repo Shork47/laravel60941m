@@ -9,13 +9,12 @@
                 <a href="{{url('dish/destroy/'.$dish->id)}}" class="btn btn-danger"><i class="far fa-trash-alt"></i></a>
             </div>
         @endif
-        <div id="carouselExampleControlsNoTouching" class="carousel slide" data-bs-touch="false" data-bs-interval="false">
+        <div id="carouselExampleControlsNoTouching" class="carousel slide" data-bs-touch="false" data-bs-interval="false" style="width: 50%; margin: 0 auto;"   >
             <div class="carousel-inner">
                 @foreach($dish->photo as $photo)
                     <div class="carousel-item @if($loop->first) active @endif">
-                        <img src="{{ Storage::disk('minio')->url($photo->path) }}" class="d-block w-100" alt="Фото блюда">
-                        <!-- Вывод пути изображения для отладки -->
-                        <p>{{ Storage::disk('minio')->url($photo->path) }}</p>
+                        <img src="{{ Storage::disk('minio')->url($photo->path) }}" class="d-block w-100" alt="Фото блюда" style="object-fit: cover; height: 300px; width: 100%; border-radius: 10px;">
+{{--                        <p>{{ Storage::disk('minio')->url($photo->path) }}</p>--}}
                     </div>
                 @endforeach
             </div>

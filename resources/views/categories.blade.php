@@ -8,7 +8,7 @@
         <div class="col-12 col-md-6">
             <div class="card h-100 text-center" style="border-radius: 10px; border: 1px solid #000000;">
                 <a href="{{url('category/'.$category->id)}}" style="text-decoration: none; color: black;">
-                    <img src="..." class="card-img-top" alt="...">
+                    <img src="{{ Storage::disk('minio')->url($category->photo_path) }}" class="card-img-top" alt="Фото категории" style="object-fit: cover; height: 300px; width: 100%; border-radius: 10px;">
                     <div class="card-body">
                         <h2 class="card-text">{{$category->name}}</h2>
                     </div>
@@ -20,18 +20,3 @@
 </div>
 </div>
 @endsection
-
-
-
-{{--<table border="1">--}}
-{{--    <thead>--}}
-{{--    <td>id</td>--}}
-{{--    <td>Наименование</td>--}}
-{{--    </thead>--}}
-{{--    @foreach($categories as $category)--}}
-{{--        <tr>--}}
-{{--            <td>{{$category->id}}</td>--}}
-{{--            <td>{{$category->name}}</td>--}}
-{{--        </tr>--}}
-{{--    @endforeach--}}
-{{--</table>--}}

@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Dish;
 use App\Models\Ingredient;
+use App\Models\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class DishController extends Controller
 {
@@ -15,7 +18,7 @@ class DishController extends Controller
      */
     public function index(request $request)
     {
-        $perpage = $request->perpage ?? 2;
+        $perpage = $request->perpage ?? 4;
         return view('dishes', ['dishes' => Dish::orderBy('id', 'asc')->paginate($perpage)->withQueryString()]);
     }
 
@@ -37,33 +40,60 @@ class DishController extends Controller
             'cooking_method' => 'required|string',
             'cooking_time' => 'required|integer',
             'category_id' => 'required|integer',
-            'ingredients' => 'required|array|exists:ingredients,id',
+            'ingredient_names' => ['required', 'array', function ($attribute, $value, $fail) {
+                foreach ($value as $ingredientInput) {
+                    if (!preg_match('/^.+,\s*.+$/', $ingredientInput)) {
+                        $fail('Каждый ингредиент должен быть в формате "название, единица измерения". Например: "Гречка, г".');
+                    }
+                }
+            }],
             'quantities' => 'required|array|min:1',
 //            'photos.*' => 'image|mimes:jpg,jpeg,png|max:2048'
+        ],
+        [
+            'name.required' => 'Поле обязательно для заполения.',
+            'cooking_method.required' => 'Поле обязательно для заполения.',
+            'cooking_time.required' => 'Поле обязательно для заполения.',
+            'category_id.required' => 'Поле обязательно для заполения.',
+            'ingredient_names.required' => 'Поле обязательно для заполения.',
+            'quantities.required' => 'Поле обязательно для заполения.',
         ]);
 
-        $dish = new Dish($validated);
-        $dish->user_id = auth()->id();
+        $dish = new Dish([
+            'name' => $validated['name'],
+            'cooking_method' => $validated['cooking_method'],
+            'cooking_time' => $validated['cooking_time'],
+            'category_id' => $validated['category_id'],
+            'user_id' => auth()->id()
+        ]);
         $dish->save();
 
-        foreach ($validated['ingredients'] as $index => $ingredientId) {
-            $dish->ingredient()->attach($ingredientId, ['quantity' => $validated['quantities'][$index]]);
+        foreach ($validated['ingredient_names'] as $index => $ingredientInput) {
+            $parts = explode(',', $ingredientInput);
+            $ingredientName = trim($parts[0]);
+            $ingredientUnit = isset($parts[1]) ? trim($parts[1]) : '';
+
+            $ingredient = Ingredient::firstOrCreate(
+                ['name' => $ingredientName],
+                ['units' => $ingredientUnit]
+            );
+
+            $dish->ingredient()->attach($ingredient->id, ['quantity' => $validated['quantities'][$index]]);
         }
 
-            if ($request->hasFile('photos')) {
-                foreach ($request->file('photos') as $photoFile) {
-                    $path = $photoFile->store('photos', 'minio'); // Сохранение файла в папку public/photos
+        if ($request->hasFile('photos')) {
+            foreach ($request->file('photos') as $photoFile) {
+                $path = $photoFile->store('photos', 'minio');
 
-                    // Привязка фотографии к блюду
-                    $dish->photo()->create([
-                        'path' => $path
-                    ]);
-                }
-            } else {
-                // Обработка ошибки, если файлы не были загружены
-                return back()->withErrors(['error'=>'Необходимо добавить хотя бы одну фотографию']);
+                $dish->photo()->create([
+                    'path' => $path
+                ]);
             }
-        return redirect('/dish');
+        } else {
+            return back()->withErrors(['error' => 'Необходимо добавить хотя бы одну фотографию']);
+        }
+
+        return redirect('/dish') ->withErrors('success', 'Блюдо успешно добавлено');
     }
 
     /**
@@ -84,10 +114,11 @@ class DishController extends Controller
         return view('dish_edit', [
             'dish' => Dish::with(['ingredient' => function ($query) {
                 $query->select('ingredients.id', 'name', 'units', 'quantity')
-                    ->withPivot('quantity'); // Загружаем количество из pivot-таблицы (recipes)
+                    ->withPivot('quantity');
             }])->findOrFail($id),
             'categories' => Category::all(),
             'ingredients' => Ingredient::all(),
+            'photo' => Photo::where('dish_id', $id)->get()
         ]);
     }
 
@@ -101,33 +132,74 @@ class DishController extends Controller
             'cooking_method' => 'required|string',
             'cooking_time' => 'required|integer',
             'category_id' => 'integer',
-            'ingredients' => 'required|array', // массив с ингредиентами
-            'quantities' => 'required|array',  // массив с количеством для каждого ингредиента
-            'ingredients.*' => 'integer|exists:ingredients,id', // проверка, что каждый ингредиент существует
-            'quantities.*' => 'integer|min:1', // проверка на количество
+            'ingredient_names' => ['required', 'array', function ($attribute, $value, $fail) {
+                foreach ($value as $ingredientInput) {
+                    if (!preg_match('/^.+,\s*.+$/', $ingredientInput)) {
+                        $fail('Каждый ингредиент должен быть в формате "название, единица измерения". Например: "Гречка, г".');
+                    }
+                }
+            }],
+            'quantities.*' => 'integer|min:1',
+        ],
+        [
+            'name.required' => 'Поле обязательно для заполения.',
+            'cooking_method.required' => 'Поле обязательно для заполения.',
+            'cooking_time.required' => 'Поле обязательно для заполения.',
+            'category_id.required' => 'Поле обязательно для заполения.',
+            'ingredient_names.required' => 'Поле обязательно для заполения.',
+            'quantities.required' => 'Поле обязательно для заполения.',
         ]);
+        Log::info('Валидация прошла', ['validated' => $validated]);
 
-        // Получаем блюдо по ID
         $dish = Dish::all()->where('id', $id)->first();
 
-        // Обновляем основные поля блюда
         $dish->name = $validated['name'];
         $dish->cooking_method = $validated['cooking_method'];
         $dish->cooking_time = $validated['cooking_time'];
         $dish->category_id = $validated['category_id'];
         $dish->save();
 
-        // Обновляем ингредиенты блюда
-        $ingredients = $validated['ingredients'];
-        $quantities = $validated['quantities'];
         $ingredientData = [];
 
-        foreach ($ingredients as $index => $ingredientId) {
-            $ingredientData[$ingredientId] = ['quantity' => $quantities[$index]];
+        foreach ($validated['ingredient_names'] as $index => $ingredientInput) {
+            $parts = explode(',', $ingredientInput);
+            $ingredientName = trim($parts[0]);
+            $ingredientUnit = isset($parts[1]) ? trim($parts[1]) : '';
+
+            $ingredient = Ingredient::firstOrCreate(
+                ['name' => $ingredientName],
+                ['units' => $ingredientUnit]
+            );
+
+            $ingredientData[$ingredient->id] = ['quantity' => $validated['quantities'][$index]];
         }
 
-        // Синхронизируем ингредиенты в промежуточной таблице с их количеством
         $dish->ingredient()->sync($ingredientData);
+
+//        // Обработка удаления фотографий
+//        if ($request->has('photos_to_delete')) {
+//            foreach ($request->input('photos_to_delete') as $photoId) {
+//                $photo = Photo::find($photoId);
+//                if ($photo) {
+//                    Storage::disk('minio')->delete($photo->path); // Удаляем фото из MinIO
+//                    $photo->delete(); // Удаляем запись из базы данных
+//                }
+//            }
+//        }
+//
+//        // Обработка добавления новых фотографий
+//        if ($request->hasFile('photos') || $dish->photo->count() > 0) {
+//            foreach ($request->file('photos') as $photoFile) {
+//                $path = $photoFile->store('photos', 'minio');
+//
+//                // Привязываем новую фотографию к блюду
+//                $dish->photo()->create([
+//                    'path' => $path
+//                ]);
+//            }
+//        } else {
+//            return back()->withErrors(['error' => 'Необходимо добавить хотя бы одну фотографию']);
+//        }
 
         return redirect()->route('dish.show',['id'=> $dish->id])->withErrors('success', 'Блюдо обновлено успешно');
     }
@@ -137,10 +209,17 @@ class DishController extends Controller
      */
     public function destroy(string $id)
     {
-        if (! Gate::allows('destroy-dish', Dish::all()->where('id', $id)->first())) {
-            return redirect('/error')->with('message', 'У вас нет разрешение на удаление блюда номер ' . $id);
+        $dish = Dish::findOrFail($id);
+
+        foreach ($dish->photo as $photo) {
+            Storage::disk('minio')->delete($photo->path);
+
+            $photo->delete();
         }
-        Dish::destroy($id);
-        return redirect('/dish')->withErrors(['error'=>'Блюдо успешно удалено!']);
+
+        $dish->ingredient()->detach();
+
+        $dish->delete();
+        return redirect('/dish')->withErrors(['success'=>'Блюдо успешно удалено!']);
     }
 }

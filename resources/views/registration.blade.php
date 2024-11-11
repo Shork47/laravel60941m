@@ -15,7 +15,6 @@
                     @enderror
                 </div>
 
-                <!-- Поле для email -->
                 <div class="form-floating mb-3">
                     <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="name@example.com" value="{{ old('email') }}" required>
                     <label for="email">Email</label>
@@ -24,7 +23,6 @@
                     @enderror
                 </div>
 
-                <!-- Поле для пароля -->
                 <div class="form-floating mb-3">
                     <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Пароль" required>
                     <label for="password">Пароль</label>
@@ -33,13 +31,11 @@
                     @enderror
                 </div>
 
-                <!-- Поле для подтверждения пароля -->
                 <div class="form-floating mb-3">
                     <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Подтвердите пароль" required>
                     <label for="password_confirmation">Подтвердите пароль</label>
                 </div>
 
-                <!-- Кнопка отправки -->
                 <div class="d-grid w-25 d-flex ">
                     <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
                 </div>
