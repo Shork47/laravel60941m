@@ -80,10 +80,10 @@
                     </div>
                     <input type="text" name="ingredient_names[]" id="ingredient_{{ $ingredient->id }}" class="form-control"
                            placeholder="Начните вводить необходимый ингредиент" list="ingredientsList_{{ $ingredient->id }}"
-                           value="{{ $ingredient->name }}, {{ $ingredient->units }}" autocomplete="off" />
-                    <datalist id="ingredientsList">
+                           value="{{ $ingredient->name }},{{ $ingredient->units }}" autocomplete="off" />
+                    <datalist id="ingredientsList_{{ $ingredient->id }}">
                         @foreach($ingredients as $item)
-                            <option value="{{ $item->name }}, {{$item->units}}"
+                            <option value="{{ $item->name }},{{ $item->units }}"
                                     @if($item->id == $ingredient->id) selected @endif>
                             </option>
                         @endforeach

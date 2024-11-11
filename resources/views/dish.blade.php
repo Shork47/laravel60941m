@@ -27,7 +27,7 @@
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
-        <h2 style="text-align: center">{{"Список ингредиентов для блюда ".$dish->name}}</h2>
+        <h2 style="text-align: center">Список ингредиентов</h2>
         <div class="d-flex justify-content-center">
         <table class="table table-bordered border border-dark text-center align-middle" style="width: 50%;box-shadow: 0 0 0 2px black;  overflow: hidden; border-radius: 10px">
 {{--            <td>id</td>--}}

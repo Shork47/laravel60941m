@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="d-flex justify-content-center align-items-center vh-100">
-        <div class="container-md w-25 p-3" style="border-radius: 10px; border: 2px solid #000000">
+        <div class="container p-3" style="border-radius: 10px; border: 2px solid #000000">
             <h3 class="text-center">Регистрация</h3>
             <form action="{{ url('registration') }}" method="POST">
                 @csrf
@@ -42,4 +42,16 @@
             </form>
         </div>
     </div>
+    <style>
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+        }
+        @media (min-width: 992px) {
+            .container {
+                width: 30%; /* или любое другое значение для уменьшения ширины */
+            }
+        }
+    </style>
 @endsection

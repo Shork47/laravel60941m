@@ -66,7 +66,7 @@
                 <input type="text" name="ingredient_names[]" id="ingredient_1" class="form-control" placeholder="Начните вводить необходимый ингредиент" list="ingredientsList" autocomplete="off" />
                 <datalist id="ingredientsList">
                     @foreach($ingredients as $ingredient)
-                        <option value="{{ $ingredient->name }}, {{ $ingredient->units }}"></option>
+                        <option value="{{ $ingredient->name }},{{ $ingredient->units }}"></option>
                     @endforeach
                 </datalist>
                 @error('ingredient_names')

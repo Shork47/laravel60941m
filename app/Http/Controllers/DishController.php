@@ -43,7 +43,7 @@ class DishController extends Controller
             'ingredient_names' => ['required', 'array', function ($attribute, $value, $fail) {
                 foreach ($value as $ingredientInput) {
                     if (!preg_match('/^.+,\s*.+$/', $ingredientInput)) {
-                        $fail('Каждый ингредиент должен быть в формате "название, единица измерения". Например: "Гречка, г".');
+                        $fail('Каждый ингредиент должен быть в формате "название, единица измерения". Например: "Гречка,г".');
                     }
                 }
             }],
@@ -69,15 +69,25 @@ class DishController extends Controller
         $dish->save();
 
         foreach ($validated['ingredient_names'] as $index => $ingredientInput) {
+            // Разделяем строку на имя и единицу измерения
             $parts = explode(',', $ingredientInput);
-            $ingredientName = trim($parts[0]);
-            $ingredientUnit = isset($parts[1]) ? trim($parts[1]) : '';
+            $ingredientName = trim($parts[0]);  // Имя ингредиента
+            $ingredientUnit = isset($parts[1]) ? trim($parts[1]) : '';  // Единица измерения
 
-            $ingredient = Ingredient::firstOrCreate(
-                ['name' => $ingredientName],
-                ['units' => $ingredientUnit]
-            );
+            // Поиск ингредиента по имени и единице измерения
+            $ingredient = Ingredient::where('name', $ingredientName)
+                ->where('units', $ingredientUnit)
+                ->first();
 
+            // Если ингредиент с таким сочетанием не найден, создаем новый
+            if (!$ingredient) {
+                $ingredient = Ingredient::create([
+                    'name' => $ingredientName,
+                    'units' => $ingredientUnit
+                ]);
+            }
+
+            // Привязываем ингредиент к блюду с нужным количеством
             $dish->ingredient()->attach($ingredient->id, ['quantity' => $validated['quantities'][$index]]);
         }
 
@@ -93,7 +103,7 @@ class DishController extends Controller
             return back()->withErrors(['error' => 'Необходимо добавить хотя бы одну фотографию']);
         }
 
-        return redirect('/dish') ->withErrors('success', 'Блюдо успешно добавлено');
+        return redirect()->route('dish.show',['id'=> $dish->id]) ->withErrors('success', 'Блюдо успешно добавлено');
     }
 
     /**
@@ -149,7 +159,6 @@ class DishController extends Controller
             'ingredient_names.required' => 'Поле обязательно для заполения.',
             'quantities.required' => 'Поле обязательно для заполения.',
         ]);
-        Log::info('Валидация прошла', ['validated' => $validated]);
 
         $dish = Dish::all()->where('id', $id)->first();
 
@@ -166,14 +175,24 @@ class DishController extends Controller
             $ingredientName = trim($parts[0]);
             $ingredientUnit = isset($parts[1]) ? trim($parts[1]) : '';
 
-            $ingredient = Ingredient::firstOrCreate(
-                ['name' => $ingredientName],
-                ['units' => $ingredientUnit]
-            );
+            // Ищем ингредиент по имени и единице измерения
+            $ingredient = Ingredient::where('name', $ingredientName)
+                ->where('units', $ingredientUnit)
+                ->first();
 
+            // Если не найден, создаем новый ингредиент
+            if (!$ingredient) {
+                $ingredient = Ingredient::create([
+                    'name' => $ingredientName,
+                    'units' => $ingredientUnit,
+                ]);
+            }
+
+            // Сохраняем количество ингредиента для связывания с блюдом
             $ingredientData[$ingredient->id] = ['quantity' => $validated['quantities'][$index]];
         }
 
+        // Синхронизируем ингредиенты с блюдом (обновляем связь)
         $dish->ingredient()->sync($ingredientData);
 
 //        // Обработка удаления фотографий
