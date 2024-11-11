@@ -13,7 +13,7 @@
             <div class="carousel-inner">
                 @foreach($dish->photo as $photo)
                     <div class="carousel-item @if($loop->first) active @endif">
-                        <img src="{{ Storage::disk('minio')->url($photo->path) }}" class="d-block w-100" alt="Фото блюда" style="object-fit: cover; height: 300px; width: 100%; border-radius: 10px;">
+                        <img src="{{ Storage::disk('minio')->url($photo->path) }}" class="d-block w-100" alt="Фото блюда" style="object-fit: cover; height: 500px; width: 100%; border-radius: 10px;">
 {{--                        <p>{{ Storage::disk('minio')->url($photo->path) }}</p>--}}
                     </div>
                 @endforeach
