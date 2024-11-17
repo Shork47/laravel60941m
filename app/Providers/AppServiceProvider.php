@@ -26,8 +26,12 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::defaultView('pagination::default');
 
+        Gate::define('edit-dish', function (User $user, Dish $dish) {
+            return $user->is_admin || $dish->user_id === $user->id;
+        });
+
         Gate::define('destroy-dish', function (User $user, Dish $dish) {
-            return $user->is_admin;
+            return $user->is_admin || $dish->user_id === $user->id;
         });
     }
 }

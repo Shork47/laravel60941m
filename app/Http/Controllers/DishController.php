@@ -121,6 +121,16 @@ class DishController extends Controller
      */
     public function edit(string $id)
     {
+        $dish = Dish::with(['ingredient' => function ($query) {
+            $query->select('ingredients.id', 'name', 'units', 'quantity')
+                ->withPivot('quantity');
+        }])->findOrFail($id);
+
+        // Проверяем права на редактирование
+        if (!Gate::allows('edit-dish', $dish)) {
+            return redirect('/dish')->withErrors(['error' => 'У вас нет прав для редактирования этого блюда']);
+        }
+
         return view('dish_edit', [
             'dish' => Dish::with(['ingredient' => function ($query) {
                 $query->select('ingredients.id', 'name', 'units', 'quantity')
@@ -229,6 +239,10 @@ class DishController extends Controller
     public function destroy(string $id)
     {
         $dish = Dish::findOrFail($id);
+
+        if (!Gate::allows('destroy-dish', $dish)) {
+            return redirect('/dish')->withErrors(['error' => 'У вас нет прав для удаления этого блюда']);
+        }
 
         foreach ($dish->photo as $photo) {
             Storage::disk('minio')->delete($photo->path);
