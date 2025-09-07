@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CategoryControllerAPI;
 use App\Http\Controllers\DishController;
@@ -51,10 +52,12 @@ Route::get('/registration', [RegistrationController::class, 'registration']);
 
 Route::post('/registration', [RegistrationController::class, 'register']);
 
-//for API
-Route::prefix('api')->group(function () {
-    Route::apiResource('category', CategoryControllerAPI::class);
-    Route::apiResource('ingredient', IngredientControllerAPI::class);
-    Route::apiResource('dish', DishControllerAPI::class);
-});
+////for API
+//Route::prefix('api')->middleware('api')->group(function () {
+//    Route::post('/login', [AuthController::class,'login']);
+//
+//    Route::apiResource('category', CategoryControllerAPI::class);
+//    Route::apiResource('ingredient', IngredientControllerAPI::class);
+//    Route::apiResource('dish', DishControllerAPI::class);
+//});
 
