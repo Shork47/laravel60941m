@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CategoryControllerAPI;
 use App\Http\Controllers\DishController;
+use App\Http\Controllers\DishControllerAPI;
 use App\Http\Controllers\IngredientController;
+use App\Http\Controllers\IngredientControllerAPI;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegistrationController;
 use Illuminate\Support\Facades\Route;
@@ -47,3 +50,11 @@ Route::get('/error', function () {
 Route::get('/registration', [RegistrationController::class, 'registration']);
 
 Route::post('/registration', [RegistrationController::class, 'register']);
+
+//for API
+Route::prefix('api')->group(function () {
+    Route::apiResource('category', CategoryControllerAPI::class);
+    Route::apiResource('ingredient', IngredientControllerAPI::class);
+    Route::apiResource('dish', DishControllerAPI::class);
+});
+
