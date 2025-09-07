@@ -8,7 +8,12 @@
         <div class="col-12 col-md-6">
             <div class="card h-100 text-center" style="border-radius: 10px; border: 1px solid #000000;">
                 <a href="{{url('category/'.$category->id)}}" style="text-decoration: none; color: black;">
-                    <img src="{{ Storage::disk('minio')->url($category->photo_path) }}" class="card-img-top" alt="Фото категории" style="object-fit: cover; height: 300px; width: 100%; border-radius: 10px;">
+                    @if($category->photo_path)
+                        <img src="{{ Storage::disk('minio')->url($category->photo_path) }}" class="card-img-top" alt="Фото категории" style="object-fit: cover; height: 300px; width: 100%; border-radius: 10px;">
+                    @else
+                        <img src="" class="card-img-top" alt="Фото категории" style="object-fit: cover; height: 300px; width: 100%; border-radius: 10px;">
+                    @endif
+{{--                    <img src="{{ Storage::disk('minio')->url($category->photo_path) }}" class="card-img-top" alt="Фото категории" style="object-fit: cover; height: 300px; width: 100%; border-radius: 10px;">--}}
                     <div class="card-body">
                         <h2 class="card-text">{{$category->name}}</h2>
                     </div>
