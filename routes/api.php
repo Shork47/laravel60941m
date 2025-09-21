@@ -15,8 +15,10 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/category', [CategoryControllerAPI::class, 'index']);
 Route::get('/category/{id}', [CategoryControllerAPI::class, 'show']);
-//Route::get('/dish', [DishControllerAPI::class, 'index']);
+Route::get('/categories_total', [CategoryControllerApi::class, 'total']);
+Route::get('/dish', [DishControllerAPI::class, 'index']);
 Route::get('/dish/{id}', [DishControllerAPI::class, 'show']);
+Route::get('/dish_total', [DishControllerApi::class, 'total']);
 Route::get('/ingredient', [IngredientControllerAPI::class, 'index']);
 Route::get('/ingredient/{id}', [IngredientControllerAPI::class, 'show']);
 
@@ -26,6 +28,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-    Route::get('/dish', [DishControllerAPI::class, 'index']);// вот это мб надо будет убрать
+    //Route::get('/dish', [DishControllerAPI::class, 'index']);// вот это мб надо будет убрать
     Route::get('/logout', [AuthController::class, 'logout']);
 });
