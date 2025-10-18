@@ -33,5 +33,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('destroy-dish', function (User $user, Dish $dish) {
             return $user->is_admin || $dish->user_id === $user->id;
         });
+
+        Gate::define('category-create', function (User $user) {
+            return true;
+        });
     }
 }

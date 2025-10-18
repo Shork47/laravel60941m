@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Category extends Model
 {
     use HasFactory;
+    protected $fillable = ['name', 'picture_url'];
+    public $timestamps = false;
 
     public static function create(array $array)
     {

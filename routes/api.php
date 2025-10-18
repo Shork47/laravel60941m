@@ -30,4 +30,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
     //Route::get('/dish', [DishControllerAPI::class, 'index']);// вот это мб надо будет убрать
     Route::get('/logout', [AuthController::class, 'logout']);
+    Route::post('/category', [CategoryControllerApi::class, 'store']);
 });

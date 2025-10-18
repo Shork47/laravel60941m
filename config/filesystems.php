@@ -52,20 +52,25 @@ return [
             'bucket' => env('AWS_BUCKET'),
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
-            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
-            'throw' => false,
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', true),
+            'throw' => true,
         ],
 
         'minio' => [
             'driver' => 's3',
-            'key'    => env('MINIO_ROOT_USER'),  // Ваш ключ доступа
-            'secret' => env('MINIO_ROOT_PASSWORD'),  // Ваш секретный ключ
-            'region' => 'us-east-1',  // Можете указать любое значение
-            'bucket' => env('MINIO_BUCKET'),  // Название вашего бакета
-            'endpoint' => env('MINIO_ENDPOINT'),  // Адрес MinIO сервера
-            'use_path_style_endpoint' => true,  // Включить для MinIO
+            'key'    => env('MINIO_ROOT_USER'),
+            'secret' => env('MINIO_ROOT_PASSWORD'),
+            'region' => 'us-east-1',
+            'bucket' => env('MINIO_BUCKET'),
+            'endpoint' => env('MINIO_ENDPOINT'),
+            'use_path_style_endpoint' => true,
+            'options' => [
+                'http' => [
+                    'timeout' => 300, // 300 секунд
+                    'connect_timeout' => 60,
+                ],
+            ],
         ],
-
     ],
 
     /*
