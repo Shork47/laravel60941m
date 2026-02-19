@@ -18,14 +18,16 @@ class InitialDataSeeder extends Seeder
            ['name' => 'admin', 'email' => 'admin@gmail.com', 'password' => Hash::make('pepega'), 'is_admin' => true],
         ]);
         DB::table('categories')->insert([
-            ['name' => 'Супы', 'photo_path' => 'category/soups.jpg'],
-            ['name' => 'Горячее', 'photo_path' => 'category/hotter.jpg'],
-            ['name' => 'Салаты', 'photo_path' => 'category/salads.jpg'],
-            ['name' => 'Закуски', 'photo_path' => 'category/snacks.jpg'],
-            ['name' => 'Соусы', 'photo_path' => 'category/sauces.jpg'],
-            ['name' => 'Изделия из теста', 'photo_path' => 'category/dough.jpg'],
-            ['name' => 'Десерты', 'photo_path' => 'category/desserts.jpg'],
-            ['name' => 'Мангал', 'photo_path' => 'category/grill.jpg'],
+            ['name' => 'Супы', 'photo_path' => 'https://storage.yandexcloud.net/photo-cooking/category/soups.jpg'],
+            ['name' => 'Горячее', 'photo_path' => 'https://storage.yandexcloud.net/photo-cooking/category/hotter.jpg'],
+            ['name' => 'Салаты', 'photo_path' => 'https://storage.yandexcloud.net/photo-cooking/category/salads.jpg'],
+            ['name' => 'Закуски', 'photo_path' => 'https://storage.yandexcloud.net/photo-cooking/category/snacks.jpg'],
+            ['name' => 'Соусы', 'photo_path' => 'https://storage.yandexcloud.net/photo-cooking/category/sauses.jpg'],
+            ['name' => 'Изделия из теста', 'photo_path' => 'https://storage.yandexcloud.net/photo-cooking/category/dough.jpg'],
+            ['name' => 'Десерты', 'photo_path' => 'https://storage.yandexcloud.net/photo-cooking/category/dessserts.jpg'],
+            ['name' => 'Мангал', 'photo_path' => 'https://storage.yandexcloud.net/photo-cooking/category/grill.jpg'],
+            ['name' => 'Напитки', 'photo_path' => 'https://storage.yandexcloud.net/photo-cooking/category/15796_drinks.jpg'],
+            ['name' => 'Роллы', 'photo_path' => 'https://storage.yandexcloud.net/photo-cooking/category/79181_rolls.jpg'],
         ]);
         // Вставка данных в таблицу dishes
 //        DB::table('dishes')->insert([
